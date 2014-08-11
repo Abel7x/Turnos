@@ -1,0 +1,46 @@
+<% include header.ejs %>
+
+  <div class="row">
+    <div class="large-12 small-12 columns">
+      <h1>Selecciona Turno</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-6 small-6 columns">
+      <form action="/crear" method="POST" id="comercio">
+        <button>Comercio</button>
+        <input type="hidden" value="1" name="id_caja">
+      </form>
+    </div>
+    <div class="large-6 small-6 columns">
+      <form action="/crear" method="POST" id="catastro">
+        <button>Catastro</button>
+        <input type="hidden" value="2" name="id_caja">
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-6 small-6 columns">
+      <form action="/crear" method="POST" id="desarrollo">
+        <button>Desarrollo Urbano</button>
+        <input type="hidden" value="3" name="id_caja">
+      </form>
+    </div>
+    <div class="large-6 small-6 columns">
+      <form action="/crear" method="POST" id="traslado">
+        <button>Traslado de Domino</button>
+        <input type="hidden" value="4" name="id_caja">
+      </form>
+    </div>
+  </div>
+  <% if(typeof folio != 'undefined') {%>
+    <div class="row">
+      <div class="large-12 small-12 columns">
+        <h1 class="center">Turno: <%= folio %></h1>
+      </div>
+    </div>
+  <% } %>
+   
+  
+
+<% include footer.ejs %>

@@ -1,0 +1,85 @@
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      $('#catastro').submit(function(){
+        socket.emit('chat message', "hola");
+        $('#m').val('');
+        
+      });
+      socket.on('siguiente', function(msg){
+        var area;
+        if(msg.area=='1'){
+          area="Comercio";
+        }else if(msg.area=='2'){
+          area="Catastro";
+        }else if(msg.area=='3'){
+          area="Desarrollo Urbano";
+        }else if(msg.area=='4'){
+          area="Traslado de Dominio";
+        }
+
+        $('#turnos tr:first').before('<tr><td>'+msg.folio+'</td><td>'+ area +'</td><td>'+msg.caja+'</td></tr>');
+      });
+    </script>
+    <script>
+    $('#formTramite').submit(function(){        
+        $.ajax({
+              url: "/registrarTramite",
+              type: "POST",
+              data: $(this).serialize(),
+              dataType: "html"
+            })
+              .done(function( html ) {
+                window.open("https://script.google.com/a/macros/sanluis.gob.mx/s/AKfycbwY8Jww-PrKCHiKpzKUA2-Yf66joeL3gnwqR2gYbPQ/dev?folioVentanilla="+html, '_blank');                  
+                });
+              
+        return false;
+      });
+    </script>
+    <script>
+    $('input[name="direccion"]').on('change', function(){
+        if ($(this).val()==1) {
+            $.ajax({
+              url: "/getTramites/1",
+              cache: false
+            })
+              .done(function( html ) {
+                $( "#tramite" ).empty();
+                $( "#tramite" ).append( html );
+              });
+            
+        } else if($(this).val()==2)  {
+          $.ajax({
+              url: "/getTramites/2",
+              cache: false
+            })
+              .done(function( html ) {
+                $( "#tramite" ).empty();
+                $( "#tramite" ).append( html );
+              });
+           
+        } else if ($(this).val()==3){
+            $.ajax({
+              url: "/getTramites/3",
+              cache: false
+            })
+              .done(function( html ) {
+                $( "#tramite" ).empty();
+                $( "#tramite" ).append( html );
+              });
+        } else if($(this).val()==4){
+            $.ajax({
+              url: "/getTramites/4",
+              cache: false
+            })
+              .done(function( html ) {
+                $( "#tramite" ).empty();
+                $( "#tramite" ).append( html );
+              });
+        }
+    });
+  </script>
+  </body>
+</html>

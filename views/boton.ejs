@@ -1,0 +1,61 @@
+<% include header.ejs %>
+<link rel="stylesheet" type="text/css" href="../../css/foundation.min.css">
+
+<div class="row">
+<fieldset>
+	<legend>Registro de Tramite</legend>
+	<form id="formTramite" action="">
+		<div class="row">
+			<div class="large-7 small-7 large-offset-3 small-offset-3 columns">
+				<label for="">Seleccona la dirección</label>
+				<input type="radio" value="1" name="direccion" id="rComercio"><label for="rComercio">Comercio</label>
+				<input type="radio" value="2" name="direccion" id="rCatastro"><label for="rCatastro">Catastro</label>
+				<input type="radio" value="3" name="direccion" id="rDesarrollo"><label for="rDesarrollo">Desarrollo Urbano</label>
+				<input type="radio" value="4" name="direccion" id="rTraslado"><label for="rTraslado">Traslado de Dominio</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="large-2 small-2 columns">
+			<label for="turno">Turno</label>
+			<% if(typeof turno!='undefined'){%>
+				<input type="text" value="<%= turno %>" id="turno" disabled>
+			<% }else{ %>
+				<input type="text" value="No hay Turnos" id="turno" disabled>
+			<% } %>
+			</div>
+			<div class="large-6 small-6 columns">
+				<label for="tramite">Tramite</label>
+				<select name="tramite" id="tramite">
+					<option value="default" selected>Selecciona una Dirección </option>
+				</select>
+			</div>
+			<div class="large-2 small-2 columns">
+				<label for="folioT">Folio del Tramite</label>
+				<input type="text" name="folioTramite" id="folioT">
+			</div>
+			<div class="large-2 small-2 columns">
+			<br>
+				<button class="small">Registrar</button>
+			</div>
+		</div>
+		<input type="hidden" name="noCaja" value="<%= id_caja %>">
+		<input type="hidden" name="noVentana" value="<%= num_caja %>">
+		<% if(typeof turno!='undefined'){%>
+			<input type="hidden" name="turno" value="<%= turno %>" id="turno">
+		<% }else{ %>
+			<input type="hidden" name="turno" value="No hay Turnos" id="turno">
+		<% } %>
+	</form>
+</fieldset>
+</div>
+	<div class="row">
+		<div class="large-2 large-offset-10 small-2 small-offset-10 columns">
+			<form action="/siguiente" method="POST">
+				<button class="small">Siguiente</button>
+				<input type="hidden" name="area" value="<%= id_caja %>">
+				<input type="hidden" name="ventana" value="<%= num_caja %>">
+			</form>
+		</div>
+	</div>
+	<div id="results"></div>
+<% include footer.ejs %>
