@@ -15,31 +15,6 @@ app.set('view engine', 'ejs');
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 
-
-// =============== ROUTES ========================//
-app.get('/', function(req, res){
-  res.render('index');
-});
-
-app.get('/dar', function(req, res){
-  res.render('selector');
-});
-
-app.get('/caja/:tipo/:caja', function(req,res){	
-	var tipo = req.params.tipo;
-    var caja = req.params.caja;
-    res.render('boton',{id_caja:tipo,num_caja:caja});
-});
-
-
-// ========== SOCKET LISTENERS ===========//
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
-});
-
-
 // ====== MYSQL STUFF ========== //
 function BD(){
   	var connection = mysql.createConnection(
@@ -52,6 +27,70 @@ function BD(){
 	});
   	return connection; 
 }
+
+
+// =============== ROUTES ========================//
+app.get('/', function(req, res){
+  	var query="SELECT * FROM TRTurnosVentana, turnos where turnos.id_turno=TRTurnosVentana.id_turno LIMIT 5";
+	console.log(query);
+	var objBD = BD();
+	objBD.query(query, function(error, result, turno){
+	    if(error){
+	      console.log(error.message);
+	    }else{
+			
+			var string='<table class="large-12 small-12 columns"><thead><tr><th>Turno</th><th>Área</th><th>Caja</th></tr></thead><tbody id="turnos">';
+			result.forEach(function(entry) {
+				var area;
+		        if(entry.id_caja=='1'){
+		          area="Comercio";
+		        }else if(entry.id_caja=='2'){
+		          area="Catastro";
+		        }else if(entry.id_caja=='3'){
+		          area="Desarrollo Urbano";
+		        }else if(entry.id_caja=='4'){
+		          area="Traslado de Dominio";
+		        }
+			    string+='<tr><td>'+entry.folio+'</td><td>'+ area +'</td><td>'+entry.no_ventana+'</td></tr>';
+			});
+			string+='<tr></tr></tbody></table>';
+			res.render('index',{table:string});
+	    }
+	});
+});
+
+app.get('/dar', function(req, res){
+  res.render('selector');
+});
+
+app.get('/caja/:tipo/:caja', function(req,res){	
+	var tipo = req.params.tipo;
+    var caja = req.params.caja;
+    var objBD=BD();
+    var query="SELECt COUNT(*) AS CONTEO FROM turnos where active=1 and ID_Caja="+tipo;
+    console.log(query);
+    objBD.query(query, function(error, result){
+	    if(error){
+	      console.log(error.message);
+	    }else{
+	    	console.log("AH"+JSON.stringify(result[0]));
+    		res.render('boton',{id_caja:tipo,num_caja:caja,conteo:result[0].CONTEO});		
+			
+	    }
+	});
+    
+});
+
+
+// ========== SOCKET LISTENERS ===========//
+io.on('connection', function(socket){
+  socket.on('chat message', function(entry){
+    io.emit('chat message', entry);
+  });
+});
+
+
+
 
 // ============ REGISTRAR TRAMITE =========== //
 app.post('/registrarTramite', function(req, res) {
@@ -155,6 +194,14 @@ app.post("/siguiente", function(req,res){
 
 				    }
 				});
+
+				objBD.query('INSERT INTO TRTurnosVentana SET ?',{id_turno: result[0].id_turno,no_ventana:numero}, function(error, result){
+					if(error){
+				      console.log(error.message);
+				    }else{
+
+				    }
+				});
 				var turno = result[0].folio;
 				if(turno<10){
 					turno = '000'+turno;
@@ -163,9 +210,21 @@ app.post("/siguiente", function(req,res){
 				}else if(turno<1000){
 					turno = '0'+turno;
 				}
-	    		res.render('boton',{id_caja:id, num_caja:numero, turno:turno})
+				var query="SELECt COUNT(*) AS CONTEO FROM turnos where active=1 and ID_Caja="+id;
+				console.log(query);
+
+				objBD.query(query, function(error, result){
+				    if(error){
+				      console.log(error.message);
+				    }else{
+						res.render('boton',{id_caja:id, num_caja:numero, conteo:result[0].CONTEO, turno:turno})		
+						
+				    }
+				});
+				
+	    		
 	    	}else{
-	    		res.render('boton',{id_caja:id, num_caja:numero, mensaje:"Ya no hay turnos"})
+	    		res.render('boton',{id_caja:id, num_caja:numero, conteo:0, mensaje:"Ya no hay turnos"})
 	    	}
 	    }
 	});
@@ -198,7 +257,7 @@ app.post("/crear", function (req, res) {
 	      console.log(error.message);
 	    }else{
 	    	if(result.length>0){
-	    		//SELECT COUNT(*) FROM turnos WHERE id_caja=2 AND active=1
+	    		//SELECT COUNT(*) AS CONTEO FROM turnos WHERE id_caja=2 AND active=1
 
 	    		objBD.query('INSERT INTO turnos SET ?',{folio: result[0].folio+1,fecha:today,id_caja:req.body.id_caja, active:1}, function(error, result){
 
@@ -212,26 +271,12 @@ app.post("/crear", function (req, res) {
 					turno = '0'+turno;
 				}
 				res.render('selector',{folio:turno});
-				printer.printDirect({data:"print from Node.JS"
-					, printer:"EPSON TM-T88IV Receipts"
-					, type: "TEXT"
-					, success:function(){
-						console.log("ok");
-					}
-					, error:function(err){console.log(err);}
-				});
+
 
 	    	}else{
 	    		objBD.query('INSERT INTO turnos SET ?',{folio: 1,fecha:today,id_caja:req.body.id_caja, active:1}, function(error, result){
 				});
-				printer.printDirect({data:"print from Node.JS"
-					, printer:"Foxit PDF Printer"
-					, type: "TEXT"
-					, success:function(){
-						console.log("ok");
-					}
-					, error:function(err){console.log(err);}
-				});
+
 				res.render('selector',{folio:'0001'})
 				
 	    	}

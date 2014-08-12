@@ -22,6 +22,8 @@
 
         $('#turnos tr:first').before('<tr><td>'+msg.folio+'</td><td>'+ area +'</td><td>'+msg.caja+'</td></tr>');
       });
+
+
     </script>
     <script>
     $('#formTramite').submit(function(){        
@@ -32,8 +34,11 @@
               dataType: "html"
             })
               .done(function( html ) {
-                window.open("https://script.google.com/a/macros/sanluis.gob.mx/s/AKfycbwY8Jww-PrKCHiKpzKUA2-Yf66joeL3gnwqR2gYbPQ/dev?folioVentanilla="+html, '_blank');                  
+                $('iframe').attr('src', "https://script.google.com/a/macros/sanluis.gob.mx/s/AKfycbwY8Jww-PrKCHiKpzKUA2-Yf66joeL3gnwqR2gYbPQ/dev?folioVentanilla="+html);                  
+                $('#tramite').attr('disabled','disabled');
+                $('#folioT').attr('disabled','disabled');
                 });
+
               
         return false;
       });

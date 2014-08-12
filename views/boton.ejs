@@ -3,11 +3,11 @@
 
 <div class="row">
 <fieldset>
-	<legend>Registro de Tramite</legend>
+	<legend>Registro de Trámite</legend>
 	<form id="formTramite" action="">
 		<div class="row">
 			<div class="large-7 small-7 large-offset-3 small-offset-3 columns">
-				<label for="">Seleccona la dirección</label>
+				<label for="">Selecciona la dirección</label>
 				<input type="radio" value="1" name="direccion" id="rComercio"><label for="rComercio">Comercio</label>
 				<input type="radio" value="2" name="direccion" id="rCatastro"><label for="rCatastro">Catastro</label>
 				<input type="radio" value="3" name="direccion" id="rDesarrollo"><label for="rDesarrollo">Desarrollo Urbano</label>
@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="large-2 small-2 columns">
+			<div class="large-1 small-1 columns">
 			<label for="turno">Turno</label>
 			<% if(typeof turno!='undefined'){%>
 				<input type="text" value="<%= turno %>" id="turno" disabled>
@@ -23,14 +23,14 @@
 				<input type="text" value="No hay Turnos" id="turno" disabled>
 			<% } %>
 			</div>
-			<div class="large-6 small-6 columns">
-				<label for="tramite">Tramite</label>
+			<div class="large-5 small-5 columns">
+				<label for="tramite">Trámite</label>
 				<select name="tramite" id="tramite">
 					<option value="default" selected>Selecciona una Dirección </option>
 				</select>
 			</div>
-			<div class="large-2 small-2 columns">
-				<label for="folioT">Folio del Tramite</label>
+			<div class="large-4 small-4 columns">
+				<label for="folioT">Folio del Trámite</label>
 				<input type="text" name="folioTramite" id="folioT">
 			</div>
 			<div class="large-2 small-2 columns">
@@ -49,7 +49,10 @@
 </fieldset>
 </div>
 	<div class="row">
-		<div class="large-2 large-offset-10 small-2 small-offset-10 columns">
+	<div class="large-4 small-4 large-offset-6 small-offset-6 columns">
+		<h4>Turnos en cola: <%= conteo %></h4>
+	</div>
+		<div class="large-2 small-2 columns">
 			<form action="/siguiente" method="POST">
 				<button class="small">Siguiente</button>
 				<input type="hidden" name="area" value="<%= id_caja %>">
@@ -58,4 +61,5 @@
 		</div>
 	</div>
 	<div id="results"></div>
+	<iframe id="frame" width="0" height="0" src=""></iframe>
 <% include footer.ejs %>
