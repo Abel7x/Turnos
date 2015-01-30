@@ -1,8 +1,10 @@
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="<%= baseUrl %>js/jquery-1.11.1.js"></script>
+    <script src="<%= baseUrl %>js/select2.js"></script>
     <script>
       var socket = io();
+      var flag1=true;
       $('#catastro').submit(function(){
         socket.emit('chat message', "hola");
         $('#m').val('');
@@ -18,33 +20,64 @@
           area="Desarrollo Urbano";
         }else if(msg.area=='4'){
           area="Traslado de Dominio";
+        }else if(msg.area=='5'){
+          area="Especial";
         }
-
-        $('#turnos tr:first').before('<tr><td>'+msg.folio+'</td><td>'+ area +'</td><td>'+msg.caja+'</td></tr>');
+        playSound('New.mp3');
+        if(flag1){
+          $('#turnos tr:first').before('<tr id="yourElement" class="flash animated"><td><h2>'+msg.folio+'</h2></td><td><h2>'+ area +'</h2></td><td><h2>'+msg.caja+'</h2></td></tr>');
+          $('#yourElement').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            console.log("HOLA");
+            $("#yourElement td").css('background', 'none');
+            flag1=false;
+          });
+        }else{
+          $('#turnos tr:first').before('<tr id="yourElement" class="flash animated"><td><h2>'+msg.folio+'</h2></td><td><h2>'+ area +'</h2></td><td><h2>'+msg.caja+'</h2></td></tr>');
+          $('#yourElement').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            console.log("HOLA");
+            $("#yourElement td").css('background', 'none');
+            flag1=true;
+          });
+        }
+       
       });
 
 
     </script>
     <script>
-    $('#formTramite').submit(function(){        
+    var flag=false;    
+    $('#formTramite').submit(function(){    
         $.ajax({
               url: "/registrarTramite",
               type: "POST",
               data: $(this).serialize(),
-              dataType: "html"
+              dataType: "json"
             })
               .done(function( html ) {
-                $('iframe').attr('src', "https://script.google.com/a/macros/sanluis.gob.mx/s/AKfycbwY8Jww-PrKCHiKpzKUA2-Yf66joeL3gnwqR2gYbPQ/dev?folioVentanilla="+html);                  
+                if(html.id<10){
+                  html.id="0"+html.id;
+                  console.log(html.id);
+                }
+
+
+                $('iframe').attr('src', "https://script.google.com/a/macros/sanluis.gob.mx/s/AKfycbzEhTDrFx1MpXtxX0QalJAIAEyM6yr_pJtwxlqNY-8/dev?tipoTramite="+html.id+"&folioTramite="+html.folio);
+                console.log("https://script.google.com/a/macros/sanluis.gob.mx/s/AKfycbzEhTDrFx1MpXtxX0QalJAIAEyM6yr_pJtwxlqNY-8/dev?tipoTramite="+html.id+"&folioTramite="+html.folio);                  
                 $('#tramite').attr('disabled','disabled');
                 $('#folioT').attr('disabled','disabled');
+                $('#folioT').val('');
+                $('#registrar').attr('disabled','disabled');
+                flag=true;
+                $('table tr:last').after(html.row);
                 });
 
               
         return false;
       });
-    </script>
-    <script>
+    
     $('input[name="direccion"]').on('change', function(){
+      $('#tramite').prop('disabled',false);
+      $('#folioT').prop('disabled',false);
+      $('#registrar').prop('disabled',false);
         if ($(this).val()==1) {
             $.ajax({
               url: "/getTramites/1",
@@ -85,6 +118,34 @@
               });
         }
     });
+    $('#siguienteF').submit(function(){        
+      var txt;
+      if(!flag){
+        var r = confirm("No haz registrado ningun tramite. ¿Deséa Continuar?");
+        if (!r) {
+            return false;
+        } 
+      }
+    });
+   <% if(typeof tramites != 'undefined') {%>
+    $("#e2").select2({
+      data:<%- tramites %>
+    });
+
+    $("#e2").on("select2-selecting", function(e) { 
+      $("#requisitos").empty();
+      string = "<ul><li>"+e.choice.requisitos.replace(/-/g,"</li><li>")+"</li></ul>";
+      $("#requisitos").html(string);
+
+    });
+    <% } %>
+
+    function playSound(soundfile) {
+      $("#dummy").empty();
+     $("#dummy").html('<embed src="<%= baseUrl %>'+soundfile+'" hidden="true" autostart="true" loop="false" />');
+    }
+    
+
   </script>
   </body>
 </html>

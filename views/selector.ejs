@@ -2,45 +2,72 @@
 
   <div class="row">
     <div class="large-12 small-12 columns">
-      <h1>Selecciona Turno</h1>
+      <h1>Selecciona Área</h1>
     </div>
   </div>
   <div class="row">
-    <div class="large-6 small-6 columns">
+    <div class="large-3 small-3 columns">
       <form action="/crear" method="POST" id="comercio">
-        <button>Comercio</button>
+        <button class="mainButtons">Comercio</button>
         <input type="hidden" value="1" name="id_caja">
       </form>
     </div>
-    <div class="large-6 small-6 columns">
+    <% if(typeof folio != 'undefined') {%>
+      <div class="large-6 small-6 columns">
+        <h1 class="center">Turno: <%= folio %></h1>
+      </div>
+  <% } %>
+  
+    <div class="large-3 small-3 columns">
       <form action="/crear" method="POST" id="catastro">
-        <button>Catastro</button>
+        <button class="mainButtons">Catastro</button>
         <input type="hidden" value="2" name="id_caja">
       </form>
     </div>
   </div>
   <div class="row">
-    <div class="large-6 small-6 columns">
+    <div class="large-3 small-3 columns">
       <form action="/crear" method="POST" id="desarrollo">
-        <button>Desarrollo Urbano</button>
+        <button class="mainButtons">Desarrollo Urbano</button>
         <input type="hidden" value="3" name="id_caja">
       </form>
     </div>
+  <% if(typeof folio != 'undefined') {%>
     <div class="large-6 small-6 columns">
+      <h1 class="center">Área: <%= area %></h1>
+    </div>
+  <% } %>
+  <div class="large-3 small-3 columns">
       <form action="/crear" method="POST" id="traslado">
-        <button>Traslado de Domino</button>
+        <button class="mainButtons">Traslado de Domino</button>
         <input type="hidden" value="4" name="id_caja">
       </form>
     </div>
   </div>
-  <% if(typeof folio != 'undefined') {%>
-    <div class="row">
-      <div class="large-12 small-12 columns">
-        <h1 class="center">Turno: <%= folio %></h1>
-      </div>
+  <div class="row">
+    <div class="large-3 small-3 columns">
+      <form action="/crear" method="POST" id="traslado">
+        <button class="mainButtons">Especial</button>
+        <input type="hidden" value="5" name="id_caja">
+      </form>
     </div>
-  <% } %>
-   
-  
-
+  </div>
+  <div class="row">
+    <div class="large-12 small-12 columns">
+      <fieldset>
+        <legend>Requisitos</legend>
+        <label for="e2">Tramite:</label>
+        <input type="hidden" name="tramite" id="e2">
+      </fieldset>
+    </div>
+  </div>
+  <div class="row">
+    <p>
+    
+      <div class="large-12 small-12 columns panel" id="requisitos">
+          
+      </div>
+    
+    </p>
+  </div>
 <% include footer.ejs %>

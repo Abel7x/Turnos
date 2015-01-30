@@ -1,0 +1,1 @@
+select count(*) from turnos where fecha>'2014-09-03' AND fecha <'2014-09-16' AND id_caja=5

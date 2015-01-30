@@ -1,0 +1,51 @@
+<% include header.ejs %>
+<h3>Estadisticas con fecha del 03/09/2014 al día de hoy</h3>
+<div class="row">
+	<table>
+		<tr>
+			<th>Área</th>
+			<th>Total</th>
+		</tr>
+		<tr>
+			<td>
+				Comercio
+			</td>
+			<td>
+				<%= comercio %>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Catastro
+			</td>
+			<td>
+				<%= catastro %>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Desarrollo Urbano
+			</td>
+			<td>
+				<%= du %>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Traslado de Dominio
+			</td>
+			<td>
+				<%= td %>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Especial
+			</td>
+			<td>
+				<%= especial %>
+			</td>
+		</tr>
+	</table>
+</div>
+<% include footer.ejs %>
