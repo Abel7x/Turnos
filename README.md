@@ -1,7 +1,6 @@
-# chat-example
+# Simple Turn management system with socket.io
 
-This is the source code for a very simple chat example used for 
-the [Getting Started](http://socket.io/get-started/chat/) guide 
-of the Socket.IO website.
+This is the source code for a very simple turn management system for SLP town hall
 
-Please refer to it to learn how to run this application.
+
+
